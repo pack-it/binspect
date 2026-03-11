@@ -1,0 +1,10 @@
+[package]
+name = "binspect"
+description = "A simple inspector tool to inspect several types of binaries."
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = "4.5.60"
+thiserror = "2.0.18"
+lief = "0.17.5"
