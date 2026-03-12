@@ -12,7 +12,12 @@ mod utils;
 #[derive(Parser, Debug)]
 #[command(name = "Binspect", version, about)]
 pub struct Command {
+    /// The path of the binary to inspect.
     path: PathBuf,
+
+    /// Flag to include printing of flags
+    #[arg(short, long)]
+    flags: bool,
 }
 
 fn main() {
@@ -39,14 +44,14 @@ fn handle_command(command: Command) -> Result<()> {
         println!("The given path is a symlink, following symlink...")
     }
 
-    match lief::Binary::parse(command.path) {
+    match lief::Binary::parse(&command.path) {
         Some(lief::Binary::ELF(binary)) => {
             println!("Detected ELF binary!");
-            binaries::inspect_elf(binary)?;
+            binaries::inspect_elf(command, binary)?;
         },
         Some(lief::Binary::MachO(binary)) => {
             println!("Detected MachO binary!");
-            binaries::inspect_macho(binary)?;
+            binaries::inspect_macho(command, binary)?;
         },
         Some(lief::Binary::PE(_binary)) => {
             println!("Detected PE binary!");

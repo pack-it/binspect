@@ -1,10 +1,11 @@
 use lief::macho::FatBinary;
 
-use crate::{Result, utils};
+use crate::{Command, Result, utils};
 
-pub fn inspect_macho(binary: FatBinary) -> Result<()> {
+pub fn inspect_macho(command: Command, binary: FatBinary) -> Result<()> {
     for binary in binary.iter() {
         println!("Found binary for {:?} {:?}", binary.platform(), binary.header().cpu_type()); //TODO: proper to_string
+        println!("Type: {:?}", binary.header().file_type());
 
         print!("Libraries:");
         let mut found = false;
@@ -26,6 +27,18 @@ pub fn inspect_macho(binary: FatBinary) -> Result<()> {
         }
         if !found {
             println!(" None");
+        }
+
+        if command.flags {
+            print!("Flags:");
+            let mut found = false;
+            for (name, _) in binary.header().flags().iter_names() {
+                println!("\t{}", name);
+                found = true;
+            }
+            if !found {
+                println!(" None");
+            }
         }
     }
 
