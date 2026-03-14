@@ -53,9 +53,9 @@ fn handle_command(command: Command) -> Result<()> {
             println!("Detected MachO binary!");
             binaries::inspect_macho(command, binary)?;
         },
-        Some(lief::Binary::PE(_binary)) => {
+        Some(lief::Binary::PE(binary)) => {
             println!("Detected PE binary!");
-            println!("This binary type is currently not supported.");
+            binaries::inspect_pe(command, binary)?;
         },
         Some(lief::Binary::COFF(_binary)) => {
             println!("Detected COFF binary!");
