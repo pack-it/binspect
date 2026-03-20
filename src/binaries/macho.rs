@@ -29,6 +29,20 @@ pub fn inspect_macho(command: Command, binary: FatBinary) -> Result<()> {
             println!(" None");
         }
 
+        print!("RPath:");
+        let mut found = false;
+        for rpath in binary.rpaths() {
+            if !found {
+                println!();
+            }
+
+            println!("\t{}", rpath.path());
+            found = true;
+        }
+        if !found {
+            println!(" None");
+        }
+
         if command.flags {
             print!("Flags:");
             let mut found = false;

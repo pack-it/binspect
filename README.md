@@ -7,3 +7,4 @@ Binspect uses [LIEF](https://github.com/lief-project/LIEF) to load the different
 The supported binary types are:
 - MachO
 - ELF
+- PE

@@ -16,6 +16,15 @@ pub fn inspect_pe(_command: Command, binary: Binary) -> Result<()> {
 
         found = true;
     }
+    for import in binary.delay_imports() {
+        if !found {
+            println!();
+        }
+
+        println!("\t{} (delay)", import.name());
+
+        found = true;
+    }
     if !found {
         println!(" None");
     }
