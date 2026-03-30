@@ -9,3 +9,4 @@ clap = { version = "4.5.60", features = ["derive"] }
 thiserror = "2.0.18"
 lief = { git = "https://github.com/lief-project/LIEF.git" } #TODO: use version of LIEF
 colored = "3.1.1"
+pe-loader-lib = { path = "../pe-loader/library/", features = ["lief"] } #TODO: update to use github url
