@@ -1,24 +1,14 @@
-use std::{fs, path::PathBuf};
+use std::fs;
 
 use clap::Parser;
 use colored::Colorize;
 
-use crate::error::Result;
+use crate::{commands::Command, error::Result};
 
 mod binaries;
+mod commands;
 mod error;
 mod utils;
-
-#[derive(Parser, Debug)]
-#[command(name = "Binspect", version, about)]
-pub struct Command {
-    /// The path of the binary to inspect.
-    path: PathBuf,
-
-    /// Flag to include printing of flags
-    #[arg(short, long)]
-    flags: bool,
-}
 
 fn main() {
     let command = Command::parse();
