@@ -38,7 +38,7 @@ fn handle_command(command: Command) -> Result<()> {
     match lief::Binary::parse(&command.path) {
         Some(lief::Binary::ELF(binary)) => {
             println!("Detected ELF binary!");
-            binaries::inspect_elf(command, binary)?;
+            binaries::handle_elf(command, binary)?;
         },
         Some(lief::Binary::MachO(binary)) => {
             println!("Detected MachO binary!");

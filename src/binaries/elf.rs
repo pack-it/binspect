@@ -1,6 +1,20 @@
 use lief::elf::{Binary, dynamic::Entries};
 
-use crate::{Command, Result};
+use crate::{
+    Command, Result,
+    commands::{ChangeArgs, Subcommand},
+};
+
+pub fn handle_elf(command: Command, binary: Binary) -> Result<()> {
+    match command.subcommand {
+        Some(Subcommand::Rpath(args)) => change_rpath(args),
+        None => inspect_elf(command, binary),
+        _ => {
+            println!("This command is currently not supported for this binary type.");
+            Ok(())
+        },
+    }
+}
 
 pub fn inspect_elf(command: Command, binary: Binary) -> Result<()> {
     print!("Found binary for {:?}", binary.header().machine_type()); //TODO: proper to_string
@@ -87,4 +101,18 @@ pub fn inspect_elf(command: Command, binary: Binary) -> Result<()> {
     }
 
     Ok(())
+}
+
+pub fn change_rpath(args: ChangeArgs) -> Result<()> {
+    match args {
+        ChangeArgs::Add { value } => {
+            todo!();
+        },
+        ChangeArgs::Change { value, new_value } => {
+            todo!();
+        },
+        ChangeArgs::Remove { value } => {
+            todo!();
+        },
+    }
 }
