@@ -1,4 +1,10 @@
-use lief::elf::{Binary, dynamic::Entries};
+use std::path::PathBuf;
+
+use lief::elf::{
+    Binary,
+    builder::Config,
+    dynamic::{Entries, Rpath, RunPath},
+};
 
 use crate::{
     Command, Result,
@@ -7,12 +13,10 @@ use crate::{
 
 pub fn handle_elf(command: Command, binary: Binary) -> Result<()> {
     match command.subcommand {
-        Some(Subcommand::Rpath(args)) => change_rpath(args),
+        Some(Subcommand::Rpath(args)) => change_rpath(args, command.path, binary),
+        Some(Subcommand::Runpath(args)) => change_runpath(args, command.path, binary),
+        Some(Subcommand::Library(args)) => change_library(args, command.path, binary),
         None => inspect_elf(command, binary),
-        _ => {
-            println!("This command is currently not supported for this binary type.");
-            Ok(())
-        },
     }
 }
 
@@ -103,16 +107,108 @@ pub fn inspect_elf(command: Command, binary: Binary) -> Result<()> {
     Ok(())
 }
 
-pub fn change_rpath(args: ChangeArgs) -> Result<()> {
+pub fn change_rpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
         ChangeArgs::Add { value } => {
-            todo!();
+            println!("Adding RPath '{value}' to binary.");
+            binary.add_dynamic_entry(&Rpath::new(&value));
         },
+
         ChangeArgs::Change { value, new_value } => {
-            todo!();
+            println!("Changing RPath '{value}' to '{new_value}' in binary.");
+            for entry in binary.dynamic_entries() {
+                let mut rpath = match entry {
+                    Entries::Rpath(rpath) => rpath,
+                    _ => continue,
+                };
+
+                if rpath.rpath() == value {
+                    rpath.set_rpath(&new_value);
+                }
+            }
         },
+
         ChangeArgs::Remove { value } => {
-            todo!();
+            println!("Removing RPath '{value}' from binary.");
+            binary.remove_dynamic_entry_if(|x| match x {
+                Entries::Rpath(rpath) if rpath.rpath() == value => true,
+                _ => false,
+            });
         },
     }
+
+    println!("Saving binary to {path:?}");
+    let config = Config::default();
+    binary.write_with_config(path, config);
+
+    Ok(())
+}
+
+pub fn change_runpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
+    match args {
+        ChangeArgs::Add { value } => {
+            println!("Adding RunPath '{value}' to binary.");
+            binary.add_dynamic_entry(&RunPath::new(&value));
+        },
+
+        ChangeArgs::Change { value, new_value } => {
+            println!("Changing RunPath '{value}' to '{new_value}' in binary.");
+            for entry in binary.dynamic_entries() {
+                let mut runpath = match entry {
+                    Entries::RunPath(runpath) => runpath,
+                    _ => continue,
+                };
+
+                if runpath.runpath() == value {
+                    runpath.set_runpath(&new_value);
+                }
+            }
+        },
+
+        ChangeArgs::Remove { value } => {
+            println!("Removing RunPath '{value}' from binary.");
+            binary.remove_dynamic_entry_if(|x| match x {
+                Entries::RunPath(runpath) if runpath.runpath() == value => true,
+                _ => false,
+            });
+        },
+    }
+
+    println!("Saving binary to {path:?}");
+    let config = Config::default();
+    binary.write_with_config(path, config);
+
+    Ok(())
+}
+
+pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
+    match args {
+        ChangeArgs::Add { value } => {
+            println!("Adding library '{value}' to binary.");
+            binary.add_library(&value);
+        },
+
+        ChangeArgs::Change { value, new_value } => {
+            println!("Changing library '{value}' to '{new_value}' in binary.");
+            match binary.get_library(&value) {
+                Some(mut library) => library.set_name(&new_value),
+                None => {
+                    println!("Cannot find library '{value}' in binary.");
+                    return Ok(());
+                },
+            }
+        },
+
+        ChangeArgs::Remove { value } => {
+            println!("Removing library '{value}' from binary.");
+            // TODO: check if library exists
+            binary.remove_library(&value);
+        },
+    }
+
+    println!("Saving binary to {path:?}");
+    let config = Config::default();
+    binary.write_with_config(path, config);
+
+    Ok(())
 }
