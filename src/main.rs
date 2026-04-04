@@ -25,13 +25,14 @@ fn handle_command(command: Command) -> Result<()> {
     }
 
     let metadata = fs::symlink_metadata(&command.path)?;
-    if metadata.is_dir() {
-        println!("The given path is a directory");
-        return Ok(());
-    }
-
     if metadata.is_symlink() {
         println!("The given path is a symlink, following symlink...")
+    }
+
+    // Check if the final path is a directory
+    if fs::metadata(&command.path)?.is_dir() {
+        println!("The given path is a directory");
+        return Ok(());
     }
 
     match lief::Binary::parse(&command.path) {
