@@ -1,4 +1,4 @@
-use lief::macho::FatBinary;
+use lief::macho::{Binary, FatBinary};
 
 use crate::{Command, Result, utils};
 
@@ -6,6 +6,16 @@ pub fn inspect_macho(command: Command, binary: FatBinary) -> Result<()> {
     for binary in binary.iter() {
         println!("Found binary for {:?} {:?}", binary.platform(), binary.header().cpu_type()); //TODO: proper to_string
         println!("Type: {:?}", binary.header().file_type());
+
+        print!("Minimum OS version: ");
+        match get_minimum_os_version(&binary) {
+            Some((sdk, minos)) => println!(
+                "{} (sdk {})",
+                utils::tuple_version_to_string(minos),
+                utils::tuple_version_to_string(sdk)
+            ),
+            None => println!("Not found"),
+        };
 
         print!("Libraries:");
         let mut found = false;
@@ -57,4 +67,18 @@ pub fn inspect_macho(command: Command, binary: FatBinary) -> Result<()> {
     }
 
     Ok(())
+}
+
+/// Gets the minimum os version required for running the binary.
+/// Returns None if a minimum version cannot be found.
+fn get_minimum_os_version(binary: &Binary) -> Option<((u64, u64, u64), (u64, u64, u64))> {
+    if let Some(version) = binary.version_min() {
+        return Some((version.sdk(), version.version()));
+    }
+
+    if let Some(version) = binary.build_version() {
+        return Some((version.sdk(), version.minos()));
+    }
+
+    None
 }
