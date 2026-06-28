@@ -26,7 +26,7 @@ pub enum Subcommand {
     #[command(subcommand)]
     Runpath(ChangeArgs),
 
-    /// Changes the libraries of the binary.
+    /// Changes the libraries of the binary. (In PE binaries these are normally called 'imports')
     #[command(subcommand)]
     Library(ChangeArgs),
 }
