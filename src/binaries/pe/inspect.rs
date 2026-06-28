@@ -1,4 +1,4 @@
-use lief::{generic::Section, pe::Binary};
+use lief::pe::Binary;
 
 use crate::{Command, Result};
 
