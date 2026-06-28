@@ -42,11 +42,11 @@ fn handle_command(command: Command) -> Result<()> {
         },
         Some(lief::Binary::MachO(binary)) => {
             println!("Detected MachO binary!");
-            binaries::inspect_macho(command, binary)?;
+            binaries::handle_macho(command, binary)?;
         },
         Some(lief::Binary::PE(binary)) => {
             println!("Detected PE binary!");
-            binaries::inspect_pe(command, binary)?;
+            binaries::handle_pe(command, binary)?;
         },
         Some(lief::Binary::COFF(_binary)) => {
             println!("Detected COFF binary!");
