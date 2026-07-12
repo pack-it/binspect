@@ -9,11 +9,13 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Resul
         match &args {
             ChangeArgs::Add { value } => {
                 println!("Adding RPath '{value}' to binary.");
+
                 binary.add_command(RPath::new(value));
             },
 
             ChangeArgs::Change { value, new_value } => {
                 println!("Changing RPath '{value}' to '{new_value}' in binary.");
+
                 for mut entry in binary.rpaths() {
                     if entry.path() == *value {
                         entry.set_path(&new_value);

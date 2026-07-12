@@ -8,11 +8,13 @@ pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Res
     match args {
         ChangeArgs::Add { value } => {
             println!("Adding import '{value}' to binary.");
+
             binary.add_import(&value);
         },
 
         ChangeArgs::Change { value, new_value } => {
             println!("Changing import '{value}' to '{new_value}' in binary.");
+
             match binary.import_by_name(&value) {
                 Some(mut import) => import.set_name(&new_value),
                 None => {
@@ -24,7 +26,13 @@ pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Res
 
         ChangeArgs::Remove { value } => {
             println!("Removing import '{value}' from binary.");
-            // TODO: check if import exists
+
+            // Check if import exists
+            if binary.import_by_name(&value).is_none() {
+                println!("Cannot find import '{value}' in binary.");
+                return Ok(());
+            }
+
             binary.remove_import(&value);
         },
     }

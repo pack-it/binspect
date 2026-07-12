@@ -8,11 +8,13 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
     match args {
         ChangeArgs::Add { value } => {
             println!("Adding library '{value}' to binary.");
+
             binary.add_library(&value);
         },
 
         ChangeArgs::Change { value, new_value } => {
             println!("Changing library '{value}' to '{new_value}' in binary.");
+
             match binary.get_library(&value) {
                 Some(mut library) => library.set_name(&new_value),
                 None => {
@@ -24,7 +26,13 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
 
         ChangeArgs::Remove { value } => {
             println!("Removing library '{value}' from binary.");
-            // TODO: check if library exists
+
+            // Check if library exists
+            if binary.get_library(&value).is_none() {
+                println!("Cannot find library '{value}' in binary.");
+                return Ok(());
+            }
+
             binary.remove_library(&value);
         },
     }

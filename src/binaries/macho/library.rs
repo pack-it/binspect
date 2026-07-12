@@ -9,11 +9,13 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Res
         match &args {
             ChangeArgs::Add { value } => {
                 println!("Adding library '{value}' to binary.");
+
                 binary.add_library(&value);
             },
 
             ChangeArgs::Change { value, new_value } => {
                 println!("Changing library '{value}' to '{new_value}' in binary.");
+
                 match binary.find_library(&value) {
                     Some(mut library) => library.set_name(&new_value),
                     None => {
