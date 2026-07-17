@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use lief::elf::{Binary, builder::Config};
 
-use crate::{Result, commands::ChangeArgs};
+use crate::{Result, commands::ChangeArgs, error::Error};
 
 pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
@@ -18,8 +18,10 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
             match binary.get_library(&value) {
                 Some(mut library) => library.set_name(&new_value),
                 None => {
-                    println!("Cannot find library '{value}' in binary.");
-                    return Ok(());
+                    return Err(Error::FieldNotFound {
+                        name: "library".into(),
+                        value: value.clone(),
+                    });
                 },
             }
         },
@@ -29,8 +31,10 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
 
             // Check if library exists
             if binary.get_library(&value).is_none() {
-                println!("Cannot find library '{value}' in binary.");
-                return Ok(());
+                return Err(Error::FieldNotFound {
+                    name: "library".into(),
+                    value: value.clone(),
+                });
             }
 
             binary.remove_library(&value);

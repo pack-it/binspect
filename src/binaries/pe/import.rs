@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use lief::pe::{Binary, builder::Config};
 
-use crate::{Result, commands::ChangeArgs};
+use crate::{Result, commands::ChangeArgs, error::Error};
 
 pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
@@ -18,8 +18,10 @@ pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Res
             match binary.import_by_name(&value) {
                 Some(mut import) => import.set_name(&new_value),
                 None => {
-                    println!("Cannot find import '{value}' in binary.");
-                    return Ok(());
+                    return Err(Error::FieldNotFound {
+                        name: "import".into(),
+                        value,
+                    });
                 },
             }
         },
@@ -29,8 +31,10 @@ pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Res
 
             // Check if import exists
             if binary.import_by_name(&value).is_none() {
-                println!("Cannot find import '{value}' in binary.");
-                return Ok(());
+                return Err(Error::FieldNotFound {
+                    name: "import".into(),
+                    value,
+                });
             }
 
             binary.remove_import(&value);

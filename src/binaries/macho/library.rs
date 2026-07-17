@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use lief::macho::{Commands, FatBinary, builder::Config};
 
-use crate::{Result, commands::ChangeArgs};
+use crate::{Result, commands::ChangeArgs, error::Error};
 
 pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Result<()> {
     for mut binary in binary.iter() {
@@ -19,8 +19,10 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Res
                 match binary.find_library(&value) {
                     Some(mut library) => library.set_name(&new_value),
                     None => {
-                        println!("Cannot find library '{value}' in binary.");
-                        return Ok(());
+                        return Err(Error::FieldNotFound {
+                            name: "library".into(),
+                            value: value.clone(),
+                        });
                     },
                 }
             },
@@ -38,7 +40,10 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Res
                 }
 
                 if !found {
-                    println!("Library '{value}' not found in binary");
+                    return Err(Error::FieldNotFound {
+                        name: "library".into(),
+                        value: value.clone(),
+                    });
                 }
             },
         }

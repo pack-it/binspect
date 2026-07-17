@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use lief::macho::{Commands, FatBinary, builder::Config, commands::RPath};
 
-use crate::{Result, commands::ChangeArgs};
+use crate::{Result, commands::ChangeArgs, error::Error};
 
 pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Result<()> {
     for mut binary in binary.iter() {
@@ -36,7 +36,10 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Resul
                 }
 
                 if !found {
-                    println!("RPath '{value}' not found in binary");
+                    return Err(Error::FieldNotFound {
+                        name: "RPath".into(),
+                        value: value.clone(),
+                    });
                 }
             },
         }
