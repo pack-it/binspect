@@ -1,6 +1,5 @@
 use std::fs;
 
-use clap::Parser;
 use colored::Colorize;
 
 use crate::{commands::Command, error::Result};
@@ -11,7 +10,7 @@ mod error;
 mod utils;
 
 fn main() {
-    let command = Command::parse();
+    let command = Command::read();
 
     if let Err(e) = handle_command(command) {
         println!("{}: {e}", "ERROR".red().bold());

@@ -17,6 +17,6 @@ pub fn handle_pe(command: Command, binary: Binary) -> Result<()> {
         },
         // Libraries are called imports in pe binaries
         Some(Subcommand::Library(args)) => import::change_import(args, command.path, binary),
-        None => inspect::inspect_pe(command, binary),
+        None => inspect::inspect_pe(command.inspect_args.unwrap_or_default(), binary),
     }
 }

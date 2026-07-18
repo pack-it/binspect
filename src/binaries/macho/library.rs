@@ -7,7 +7,7 @@ use crate::{Result, commands::ChangeArgs, error::Error};
 pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Result<()> {
     for mut binary in binary.iter() {
         match &args {
-            ChangeArgs::Add { value } => {
+            ChangeArgs::Add { value, force } => {
                 println!("Adding library '{value}' to binary.");
 
                 binary.add_library(&value);

@@ -10,7 +10,7 @@ use crate::{Result, commands::ChangeArgs};
 
 pub fn change_runpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
-        ChangeArgs::Add { value } => {
+        ChangeArgs::Add { value, force } => {
             println!("Adding RunPath '{value}' to binary.");
 
             binary.add_dynamic_entry(&RunPath::new(&value));

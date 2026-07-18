@@ -14,6 +14,6 @@ pub fn handle_macho(command: Command, binary: FatBinary) -> Result<()> {
             Ok(())
         },
         Some(Subcommand::Library(args)) => library::change_library(args, command.path, binary),
-        None => inspect::inspect_macho(command, binary),
+        None => inspect::inspect_macho(command.inspect_args.unwrap_or_default(), binary),
     }
 }

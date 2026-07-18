@@ -1,6 +1,6 @@
-use std::path::PathBuf;
+use std::{fmt::Display, path::PathBuf};
 
-use clap::{Parser, Subcommand as ClapSubcommand};
+use clap::{Args, CommandFactory, Parser, Subcommand as ClapSubcommand};
 
 #[derive(Parser, Debug)]
 #[command(name = "Binspect", version, about)]
@@ -8,12 +8,18 @@ pub struct Command {
     /// The path of the binary to inspect.
     pub path: PathBuf,
 
-    /// Flag to include printing of flags.
-    #[arg(short, long)]
-    pub flags: bool,
+    #[command(flatten)]
+    pub inspect_args: Option<InspectOptions>,
 
     #[command(subcommand)]
     pub subcommand: Option<Subcommand>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct InspectOptions {
+    /// Flag to include printing of flags.
+    #[arg(short, long)]
+    pub show_flags: bool,
 }
 
 #[derive(ClapSubcommand, Debug, Clone)]
@@ -36,6 +42,10 @@ pub enum ChangeArgs {
     /// Adds a value.
     Add {
         value: String,
+
+        // Flag to force changing, even when checks forbid changes.
+        #[arg(short, long)]
+        force: bool,
     },
 
     /// Changes a value to a new value.
@@ -48,4 +58,43 @@ pub enum ChangeArgs {
     Remove {
         value: String,
     },
+}
+
+impl Default for InspectOptions {
+    fn default() -> Self {
+        Self { show_flags: false }
+    }
+}
+
+impl Display for Subcommand {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Subcommand::Rpath(_) => write!(f, "rpath"),
+            Subcommand::Runpath(_) => write!(f, "runpath"),
+            Subcommand::Library(_) => write!(f, "library"),
+        }
+    }
+}
+
+impl Command {
+    pub fn read() -> Self {
+        let command = Self::parse();
+
+        if let Some(subcommand) = &command.subcommand
+            && command.inspect_args.is_some()
+        {
+            let mut error = clap::Error::new(clap::error::ErrorKind::ArgumentConflict).with_cmd(&Command::command());
+            error.insert(
+                clap::error::ContextKind::InvalidSubcommand,
+                clap::error::ContextValue::String(subcommand.to_string()),
+            );
+            error.insert(
+                clap::error::ContextKind::PriorArg,
+                clap::error::ContextValue::String("--show-flags".into()),
+            );
+            error.exit();
+        }
+
+        command
+    }
 }

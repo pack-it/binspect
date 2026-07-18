@@ -1,8 +1,8 @@
 use lief::pe::Binary;
 
-use crate::{Command, Result};
+use crate::{Result, commands::InspectOptions};
 
-pub fn inspect_pe(_command: Command, binary: Binary) -> Result<()> {
+pub fn inspect_pe(_args: InspectOptions, binary: Binary) -> Result<()> {
     println!("Found binary for {:?}", binary.header().machine()); //TODO: proper to_string
 
     print!("Imports:");
