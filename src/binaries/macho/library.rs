@@ -10,6 +10,14 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Res
             ChangeArgs::Add { value, force } => {
                 println!("Adding library '{value}' to binary.");
 
+                // Check if library already exists when force is not enabled
+                if !force && binary.find_library(&value).is_some() {
+                    return Err(Error::FieldAlreadyExists {
+                        name: "library".into(),
+                        value: value.clone(),
+                    });
+                }
+
                 binary.add_library(&value);
             },
 

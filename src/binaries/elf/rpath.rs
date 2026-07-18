@@ -6,12 +6,20 @@ use lief::elf::{
     dynamic::{Entries, Rpath},
 };
 
-use crate::{Result, commands::ChangeArgs};
+use crate::{Result, commands::ChangeArgs, error::Error};
 
 pub fn change_rpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
         ChangeArgs::Add { value, force } => {
             println!("Adding RPath '{value}' to binary.");
+
+            // Check if RPath already exists when force is not enabled
+            if !force && contains_rpath(&binary, &value) {
+                return Err(Error::FieldAlreadyExists {
+                    name: "RPath".into(),
+                    value,
+                });
+            }
 
             binary.add_dynamic_entry(&Rpath::new(&value));
         },
@@ -46,4 +54,14 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Resu
     binary.write_with_config(path, config);
 
     Ok(())
+}
+
+fn contains_rpath(binary: &Binary, value: &str) -> bool {
+    binary
+        .dynamic_entries()
+        .find(|x| match x {
+            Entries::Rpath(rpath) if rpath.rpath() == value => true,
+            _ => false,
+        })
+        .is_some()
 }

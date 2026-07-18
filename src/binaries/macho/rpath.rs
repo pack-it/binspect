@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use lief::macho::{Commands, FatBinary, builder::Config, commands::RPath};
+use lief::macho::{Binary, Commands, FatBinary, builder::Config, commands::RPath};
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
@@ -9,6 +9,14 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Resul
         match &args {
             ChangeArgs::Add { value, force } => {
                 println!("Adding RPath '{value}' to binary.");
+
+                // Check if RPath already exists when force is not enabled
+                if !force && contains_rpath(&binary, &value) {
+                    return Err(Error::FieldAlreadyExists {
+                        name: "RPath".into(),
+                        value: value.clone(),
+                    });
+                }
 
                 binary.add_command(RPath::new(value));
             },
@@ -51,4 +59,8 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Resul
     }
 
     Ok(())
+}
+
+fn contains_rpath(binary: &Binary, value: &str) -> bool {
+    binary.rpaths().find(|x| x.path() == value).is_some()
 }

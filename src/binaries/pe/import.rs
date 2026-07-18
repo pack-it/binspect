@@ -9,6 +9,14 @@ pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Res
         ChangeArgs::Add { value, force } => {
             println!("Adding import '{value}' to binary.");
 
+            // Check if import already exists when force is not enabled
+            if !force && binary.import_by_name(&value).is_some() {
+                return Err(Error::FieldAlreadyExists {
+                    name: "import".into(),
+                    value: value.clone(),
+                });
+            }
+
             binary.add_import(&value);
         },
 

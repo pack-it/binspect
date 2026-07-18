@@ -6,12 +6,20 @@ use lief::elf::{
     dynamic::{Entries, RunPath},
 };
 
-use crate::{Result, commands::ChangeArgs};
+use crate::{Result, commands::ChangeArgs, error::Error};
 
 pub fn change_runpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
         ChangeArgs::Add { value, force } => {
             println!("Adding RunPath '{value}' to binary.");
+
+            // Check if RunPath already exists when force is not enabled
+            if !force && contains_runpath(&binary, &value) {
+                return Err(Error::FieldAlreadyExists {
+                    name: "RunPath".into(),
+                    value,
+                });
+            }
 
             binary.add_dynamic_entry(&RunPath::new(&value));
         },
@@ -46,4 +54,14 @@ pub fn change_runpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
     binary.write_with_config(path, config);
 
     Ok(())
+}
+
+fn contains_runpath(binary: &Binary, value: &str) -> bool {
+    binary
+        .dynamic_entries()
+        .find(|x| match x {
+            Entries::RunPath(runpath) if runpath.runpath() == value => true,
+            _ => false,
+        })
+        .is_some()
 }

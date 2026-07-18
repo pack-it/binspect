@@ -6,6 +6,12 @@ pub enum Error {
         value: String,
     },
 
+    #[error("Binary already contains {name} '{value}'")]
+    FieldAlreadyExists {
+        name: String,
+        value: String,
+    },
+
     #[error("Error while interacting with filesystem: {0}")]
     IOError(#[from] std::io::Error),
 }
