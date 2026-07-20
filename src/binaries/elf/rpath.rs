@@ -57,11 +57,8 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Resu
 }
 
 fn contains_rpath(binary: &Binary, value: &str) -> bool {
-    binary
-        .dynamic_entries()
-        .find(|x| match x {
-            Entries::Rpath(rpath) if rpath.rpath() == value => true,
-            _ => false,
-        })
-        .is_some()
+    binary.dynamic_entries().any(|x| match x {
+        Entries::Rpath(rpath) if rpath.rpath() == value => true,
+        _ => false,
+    })
 }

@@ -57,11 +57,8 @@ pub fn change_runpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
 }
 
 fn contains_runpath(binary: &Binary, value: &str) -> bool {
-    binary
-        .dynamic_entries()
-        .find(|x| match x {
-            Entries::RunPath(runpath) if runpath.runpath() == value => true,
-            _ => false,
-        })
-        .is_some()
+    binary.dynamic_entries().any(|x| match x {
+        Entries::RunPath(runpath) if runpath.runpath() == value => true,
+        _ => false,
+    })
 }

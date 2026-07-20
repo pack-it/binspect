@@ -18,7 +18,7 @@ pub struct Command {
 #[derive(Args, Debug, Clone)]
 pub struct InspectOptions {
     /// Flag to include printing of flags.
-    #[arg(short, long)]
+    #[arg(long)]
     pub show_flags: bool,
 }
 
@@ -41,6 +41,7 @@ pub enum Subcommand {
 pub enum ChangeArgs {
     /// Adds a value.
     Add {
+        /// The value of the new entry.
         value: String,
 
         // Flag to force changing, even when checks forbid changes.
@@ -50,12 +51,16 @@ pub enum ChangeArgs {
 
     /// Changes a value to a new value.
     Change {
+        /// The old value of the entry to change.
         value: String,
+
+        /// The new value of the entry.
         new_value: String,
     },
 
     /// Removes a value.
     Remove {
+        /// The value of the entry to remove.
         value: String,
     },
 }
@@ -77,6 +82,7 @@ impl Display for Subcommand {
 }
 
 impl Command {
+    /// Reads the command from the current arguments.
     pub fn read() -> Self {
         let command = Self::parse();
 

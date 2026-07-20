@@ -62,5 +62,5 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Resul
 }
 
 fn contains_rpath(binary: &Binary, value: &str) -> bool {
-    binary.rpaths().find(|x| x.path() == value).is_some()
+    binary.rpaths().any(|x| x.path() == value)
 }
