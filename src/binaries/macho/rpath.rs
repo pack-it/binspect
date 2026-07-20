@@ -4,6 +4,7 @@ use lief::macho::{Binary, Commands, FatBinary, builder::Config, commands::RPath}
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
+/// Handles the rpath change command for `MachO` binaries.
 pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Result<()> {
     for mut binary in binary.iter() {
         match &args {
@@ -61,6 +62,8 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Resul
     Ok(())
 }
 
+/// Checks if the given binary contains a rpath with the given value.
+/// Returns true if the value is found, false otherwise.
 fn contains_rpath(binary: &Binary, value: &str) -> bool {
     binary.rpaths().any(|x| x.path() == value)
 }

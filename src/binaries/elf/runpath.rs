@@ -8,6 +8,7 @@ use lief::elf::{
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
+/// Handles the runpath change command for `ELF` binaries.
 pub fn change_runpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
         ChangeArgs::Add { value, force } => {
@@ -56,6 +57,8 @@ pub fn change_runpath(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
     Ok(())
 }
 
+/// Checks if the given binary contains a runpath with the given value.
+/// Returns true if the value is found, false otherwise.
 fn contains_runpath(binary: &Binary, value: &str) -> bool {
     binary.dynamic_entries().any(|x| match x {
         Entries::RunPath(runpath) if runpath.runpath() == value => true,

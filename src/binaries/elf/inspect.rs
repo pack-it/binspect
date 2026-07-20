@@ -2,6 +2,7 @@ use lief::elf::{Binary, dynamic::Entries};
 
 use crate::{Result, commands::InspectOptions};
 
+/// Handles the inspect command for `ELF` binaries.
 pub fn inspect_elf(args: InspectOptions, binary: Binary) -> Result<()> {
     print!("Found binary for {:?}", binary.header().machine_type()); //TODO: proper to_string
     if binary.is_targeting_android() {

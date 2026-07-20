@@ -4,6 +4,7 @@ use lief::macho::{Commands, FatBinary, builder::Config};
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
+/// Handles the library change command for `MachO` binaries.
 pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Result<()> {
     for mut binary in binary.iter() {
         match &args {

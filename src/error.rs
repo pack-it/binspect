@@ -1,3 +1,4 @@
+/// The errors that occur within Binspect.
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("Cannot find {name} '{value}' in binary")]

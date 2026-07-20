@@ -7,6 +7,7 @@ use lief::elf::Binary;
 
 use crate::{Command, Result, commands::Subcommand};
 
+/// Handles a command for an `ELF` binary.
 pub fn handle_elf(command: Command, binary: Binary) -> Result<()> {
     match command.subcommand {
         Some(Subcommand::Rpath(args)) => rpath::change_rpath(args, command.path, binary),

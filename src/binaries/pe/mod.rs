@@ -3,16 +3,17 @@ mod inspect;
 
 use lief::pe::Binary;
 
-use crate::{Command, Result, commands::Subcommand};
+use crate::{Command, Result, commands::Subcommand, macros::error};
 
+/// Handles a command for a `PE` binary.
 pub fn handle_pe(command: Command, binary: Binary) -> Result<()> {
     match command.subcommand {
         Some(Subcommand::Rpath(_)) => {
-            println!("PE binaries do not support Rpath");
+            error!("PE binaries do not support Rpath");
             Ok(())
         },
         Some(Subcommand::Runpath(_)) => {
-            println!("PE binaries do not support RunPath");
+            error!("PE binaries do not support RunPath");
             Ok(())
         },
         // Libraries are called imports in pe binaries

@@ -2,6 +2,7 @@ use lief::macho::{Binary, FatBinary};
 
 use crate::{Result, commands::InspectOptions, utils};
 
+/// Handles the inspect command for `MachO` binaries.
 pub fn inspect_macho(args: InspectOptions, binary: FatBinary) -> Result<()> {
     for binary in binary.iter() {
         println!("Found binary for {:?} {:?}", binary.platform(), binary.header().cpu_type()); //TODO: proper to_string

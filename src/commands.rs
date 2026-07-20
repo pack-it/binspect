@@ -15,6 +15,7 @@ pub struct Command {
     pub subcommand: Option<Subcommand>,
 }
 
+/// The arguments to the inspect command (no subcommand).
 #[derive(Args, Debug, Clone)]
 pub struct InspectOptions {
     /// Flag to include printing of flags.
@@ -37,6 +38,7 @@ pub enum Subcommand {
     Library(ChangeArgs),
 }
 
+/// The available change commands with their arguments.
 #[derive(ClapSubcommand, Debug, Clone)]
 pub enum ChangeArgs {
     /// Adds a value.

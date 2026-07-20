@@ -4,6 +4,8 @@ use lief::pe::{Binary, builder::Config};
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
+/// Handles the library change command for PE binaries.
+/// Note that `libraries` are called `imports` in `PE` binaries.
 pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
         ChangeArgs::Add { value, force } => {

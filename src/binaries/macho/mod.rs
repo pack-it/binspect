@@ -4,13 +4,14 @@ mod rpath;
 
 use lief::macho::FatBinary;
 
-use crate::{Command, Result, commands::Subcommand};
+use crate::{Command, Result, commands::Subcommand, macros::error};
 
+/// Handles a command for a `MachO` binary.
 pub fn handle_macho(command: Command, binary: FatBinary) -> Result<()> {
     match command.subcommand {
         Some(Subcommand::Rpath(args)) => rpath::change_rpath(args, command.path, binary),
         Some(Subcommand::Runpath(_)) => {
-            println!("MachO binaries do not support RunPath");
+            error!("MachO binaries do not support RunPath");
             Ok(())
         },
         Some(Subcommand::Library(args)) => library::change_library(args, command.path, binary),

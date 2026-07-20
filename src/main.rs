@@ -1,25 +1,25 @@
 use std::fs;
 
-use colored::Colorize;
-
-use crate::{commands::Command, error::Result};
+use crate::{commands::Command, error::Result, macros::error};
 
 mod binaries;
 mod commands;
 mod error;
+mod macros;
 mod utils;
 
 fn main() {
     let command = Command::read();
 
     if let Err(e) = handle_command(command) {
-        println!("{}: {e}", "ERROR".red().bold());
+        error!("{e}");
     }
 }
 
+/// Handles the given command.
 fn handle_command(command: Command) -> Result<()> {
     if !fs::exists(&command.path)? {
-        println!("The given path does not exist");
+        error!("The given path does not exist");
         return Ok(());
     }
 
@@ -30,7 +30,7 @@ fn handle_command(command: Command) -> Result<()> {
 
     // Check if the final path is a directory
     if fs::metadata(&command.path)?.is_dir() {
-        println!("The given path is a directory");
+        error!("The given path is a directory");
         return Ok(());
     }
 
@@ -49,10 +49,10 @@ fn handle_command(command: Command) -> Result<()> {
         },
         Some(lief::Binary::COFF(_binary)) => {
             println!("Detected COFF binary!");
-            println!("This binary type is currently not supported.");
+            error!("This binary type is currently not supported.");
         },
         None => {
-            println!("The given file is not a binary, or the binary is malformed.")
+            error!("The given file is not a binary, or the binary is malformed.")
         },
     }
 

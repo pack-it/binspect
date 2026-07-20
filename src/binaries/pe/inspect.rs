@@ -2,6 +2,7 @@ use lief::pe::Binary;
 
 use crate::{Result, commands::InspectOptions};
 
+/// Handles the inspect command for `PE` binaries.
 pub fn inspect_pe(_args: InspectOptions, binary: Binary) -> Result<()> {
     println!("Found binary for {:?}", binary.header().machine()); //TODO: proper to_string
 

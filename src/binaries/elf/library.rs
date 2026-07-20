@@ -4,6 +4,7 @@ use lief::elf::{Binary, builder::Config};
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
+/// Handles the library change command for `ELF` binaries.
 pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Result<()> {
     match args {
         ChangeArgs::Add { value, force } => {
