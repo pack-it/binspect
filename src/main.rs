@@ -1,6 +1,5 @@
 use std::fs;
 
-use clap::Parser;
 use colored::Colorize;
 
 use crate::{commands::Command, error::Result};
@@ -11,7 +10,7 @@ mod error;
 mod utils;
 
 fn main() {
-    let command = Command::parse();
+    let command = Command::read();
 
     if let Err(e) = handle_command(command) {
         println!("{}: {e}", "ERROR".red().bold());
@@ -38,15 +37,15 @@ fn handle_command(command: Command) -> Result<()> {
     match lief::Binary::parse(&command.path) {
         Some(lief::Binary::ELF(binary)) => {
             println!("Detected ELF binary!");
-            binaries::inspect_elf(command, binary)?;
+            binaries::handle_elf(command, binary)?;
         },
         Some(lief::Binary::MachO(binary)) => {
             println!("Detected MachO binary!");
-            binaries::inspect_macho(command, binary)?;
+            binaries::handle_macho(command, binary)?;
         },
         Some(lief::Binary::PE(binary)) => {
             println!("Detected PE binary!");
-            binaries::inspect_pe(command, binary)?;
+            binaries::handle_pe(command, binary)?;
         },
         Some(lief::Binary::COFF(_binary)) => {
             println!("Detected COFF binary!");

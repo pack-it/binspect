@@ -1,8 +1,8 @@
 use lief::elf::{Binary, dynamic::Entries};
 
-use crate::{Command, Result};
+use crate::{Result, commands::InspectOptions};
 
-pub fn inspect_elf(command: Command, binary: Binary) -> Result<()> {
+pub fn inspect_elf(args: InspectOptions, binary: Binary) -> Result<()> {
     print!("Found binary for {:?}", binary.header().machine_type()); //TODO: proper to_string
     if binary.is_targeting_android() {
         print!(" Android");
@@ -64,7 +64,7 @@ pub fn inspect_elf(command: Command, binary: Binary) -> Result<()> {
         println!(" None");
     }
 
-    if command.flags {
+    if args.show_flags {
         print!("Flags:");
         let mut found = false;
         for entry in binary.dynamic_entries() {
