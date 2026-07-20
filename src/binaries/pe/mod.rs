@@ -16,7 +16,7 @@ pub fn handle_pe(command: Command, binary: Binary) -> Result<()> {
             error!("PE binaries do not support RunPath");
             Ok(())
         },
-        // Libraries are called imports in pe binaries
+        // Libraries are called imports in `PE` binaries
         Some(Subcommand::Library(args)) => import::change_import(args, command.path, binary),
         None => inspect::inspect_pe(command.inspect_args.unwrap_or_default(), binary),
     }

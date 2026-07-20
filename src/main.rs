@@ -1,3 +1,6 @@
+#![warn(clippy::doc_markdown, clippy::inconsistent_struct_constructor, clippy::derive_partial_eq_without_eq)]
+#![warn(clippy::cargo, clippy::perf, clippy::complexity)]
+#![allow(clippy::enum_variant_names)]
 use std::fs;
 
 use crate::{commands::Command, error::Result, macros::error};

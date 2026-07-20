@@ -25,15 +25,15 @@ pub struct InspectOptions {
 
 #[derive(ClapSubcommand, Debug, Clone)]
 pub enum Subcommand {
-    /// Changes the RPath of the binary.
+    /// Changes the `RPath` of the binary.
     #[command(subcommand)]
     Rpath(ChangeArgs),
 
-    /// Changes the RunPath of the binary.
+    /// Changes the `RunPath` of the binary.
     #[command(subcommand)]
     Runpath(ChangeArgs),
 
-    /// Changes the libraries of the binary. (In PE binaries these are normally called 'imports')
+    /// Changes the libraries of the binary. (In `PE` binaries these are normally called 'imports')
     #[command(subcommand)]
     Library(ChangeArgs),
 }
@@ -67,6 +67,7 @@ pub enum ChangeArgs {
     },
 }
 
+#[expect(clippy::derivable_impls)]
 impl Default for InspectOptions {
     fn default() -> Self {
         Self { show_flags: false }

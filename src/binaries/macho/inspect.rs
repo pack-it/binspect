@@ -1,6 +1,10 @@
 use lief::macho::{Binary, FatBinary};
 
-use crate::{Result, commands::InspectOptions, utils};
+use crate::{
+    Result,
+    commands::InspectOptions,
+    utils::{self, TupleVersion},
+};
 
 /// Handles the inspect command for `MachO` binaries.
 pub fn inspect_macho(args: InspectOptions, binary: FatBinary) -> Result<()> {
@@ -72,7 +76,7 @@ pub fn inspect_macho(args: InspectOptions, binary: FatBinary) -> Result<()> {
 
 /// Gets the minimum os version required for running the binary.
 /// Returns None if a minimum version cannot be found.
-fn get_minimum_os_version(binary: &Binary) -> Option<((u64, u64, u64), (u64, u64, u64))> {
+fn get_minimum_os_version(binary: &Binary) -> Option<(TupleVersion, TupleVersion)> {
     if let Some(version) = binary.version_min() {
         return Some((version.sdk(), version.version()));
     }

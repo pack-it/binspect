@@ -1,4 +1,7 @@
+/// Version in tuple format.
+pub type TupleVersion = (u64, u64, u64);
+
 /// Converts a version in tuple format to a String representation.
-pub fn tuple_version_to_string(version: (u64, u64, u64)) -> String {
+pub fn tuple_version_to_string(version: TupleVersion) -> String {
     format!("{}.{}.{}", version.0, version.1, version.2)
 }

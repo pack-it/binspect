@@ -52,8 +52,10 @@ pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Res
     }
 
     println!("Saving binary to {path:?}");
-    let mut config = Config::default();
-    config.imports = true;
+    let config = Config {
+        imports: true,
+        ..Default::default()
+    };
     binary.write_with_config(path, config);
 
     Ok(())
