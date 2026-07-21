@@ -1,7 +1,11 @@
 [package]
 name = "binspect"
 description = "A simple inspector tool to inspect several types of binaries."
-version = "0.1.0"
+version = "0.0.1"
+authors = ["The Packit Team"]
+repository = "https://github.com/pack-it/binspect"
+keywords = ["binaries", "modification", "ELF", "MachO", "PE"]
+categories = ["command-line-utilities", "development-tools"]
 edition = "2024"
 rust-version = "1.88.0"
 
