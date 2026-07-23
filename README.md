@@ -12,6 +12,10 @@ Binspect supports inspecting binaries and simple change operations for the follo
 - `PE`: changing imports.
 
 
+## License
+The Binspect repository is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for the full license.
+
+
 ## Usage
 
 Binspect uses a simple command structure, consisting of: `binspect <BINARY-PATH> [SUBCOMMANDS] [OPTIONS]`
