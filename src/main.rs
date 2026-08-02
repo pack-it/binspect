@@ -1,7 +1,10 @@
 #![warn(clippy::doc_markdown, clippy::inconsistent_struct_constructor, clippy::derive_partial_eq_without_eq)]
 #![warn(clippy::cargo, clippy::perf, clippy::complexity)]
 #![allow(clippy::enum_variant_names)]
-use std::fs;
+use std::{
+    fs::{self, Metadata},
+    path::PathBuf,
+};
 
 use crate::{commands::Command, error::Result, macros::error};
 
@@ -26,9 +29,12 @@ fn handle_command(command: Command) -> Result<()> {
         return Ok(());
     }
 
+    // If the given path is a symlink, display the symlink traversal
     let metadata = fs::symlink_metadata(&command.path)?;
     if metadata.is_symlink() {
-        println!("The given path is a symlink, following symlink...")
+        println!("The given path is a symlink, following symlink...");
+        show_symlink_traversal(&command.path, &metadata)?;
+        println!();
     }
 
     // Check if the final path is a directory
@@ -58,6 +64,33 @@ fn handle_command(command: Command) -> Result<()> {
             error!("The given file is not a binary, or the binary is malformed.")
         },
     }
+
+    Ok(())
+}
+
+/// Shows the symlink traversal to the user.
+fn show_symlink_traversal(path: &PathBuf, metadata: &Metadata) -> Result<()> {
+    if !metadata.is_symlink() {
+        return Ok(());
+    }
+
+    // Get the symlink destination
+    let symlink_destination = fs::read_link(path)?;
+
+    // Get the absolute path of the symlink
+    let absolute_path = match symlink_destination.is_absolute() {
+        true => symlink_destination,
+        false => match path.parent() {
+            Some(parent) => parent.join(symlink_destination),
+            None => return Ok(()),
+        },
+    };
+
+    // Show the user where the symlink resolved to
+    println!("{} --> {}", path.display(), absolute_path.display());
+
+    // Traverse further if necessary
+    show_symlink_traversal(&absolute_path, &fs::symlink_metadata(&absolute_path)?)?;
 
     Ok(())
 }
