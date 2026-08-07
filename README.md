@@ -60,3 +60,7 @@ Note that libraries are called imports in `PE` binaries.
 #### `binspect <BINARY-PATH> library remove <LIBRARY>`
 Removes the given library from the binary.
 Note that libraries are called imports in `PE` binaries.
+
+#### `binspect <BINARY-PATH> sign`
+Sign the given binary.
+Note that this is currently only supported for `MachO` binaries.
