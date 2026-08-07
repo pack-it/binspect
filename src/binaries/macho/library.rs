@@ -1,11 +1,11 @@
 use std::path::PathBuf;
 
-use lief::macho::{Commands, FatBinary, builder::Config};
+use lief::macho::{Commands, FatBinary};
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
 /// Handles the library change command for `MachO` binaries.
-pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Result<()> {
+pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: FatBinary) -> Result<()> {
     for mut binary in binary.iter() {
         match &args {
             ChangeArgs::Add { value, force } => {
@@ -53,11 +53,10 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Res
                 }
             },
         }
-
-        println!("Saving binary to {path:?}");
-        let config = Config { linkedit: true };
-        binary.write_with_config(&path, config);
     }
+
+    println!("Saving binary to {path:?}");
+    binary.write(&path);
 
     Ok(())
 }

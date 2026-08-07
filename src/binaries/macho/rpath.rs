@@ -1,11 +1,11 @@
 use std::path::PathBuf;
 
-use lief::macho::{Binary, Commands, FatBinary, builder::Config, commands::RPath};
+use lief::macho::{Binary, Commands, FatBinary, commands::RPath};
 
 use crate::{Result, commands::ChangeArgs, error::Error};
 
 /// Handles the `RPath` change command for `MachO` binaries.
-pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Result<()> {
+pub fn change_rpath(args: ChangeArgs, path: PathBuf, mut binary: FatBinary) -> Result<()> {
     for mut binary in binary.iter() {
         match &args {
             ChangeArgs::Add { value, force } => {
@@ -49,12 +49,10 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, binary: FatBinary) -> Resul
                 }
             },
         }
-
-        // TODO: save full fat binary instead of the separate binaries
-        println!("Saving binary to {path:?}");
-        let config = Config { linkedit: true };
-        binary.write_with_config(&path, config);
     }
+
+    println!("Saving binary to {path:?}");
+    binary.write(&path);
 
     Ok(())
 }
