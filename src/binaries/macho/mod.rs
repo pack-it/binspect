@@ -1,3 +1,4 @@
+mod codesign;
 mod inspect;
 mod library;
 mod rpath;

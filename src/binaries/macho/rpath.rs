@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use lief::macho::{Binary, Commands, FatBinary, commands::RPath};
 
-use crate::{Result, commands::ChangeArgs, error::Error};
+use crate::{Result, binaries::macho::codesign, commands::ChangeArgs, error::Error};
 
 /// Handles the `RPath` change command for `MachO` binaries.
 pub fn change_rpath(args: ChangeArgs, path: PathBuf, mut binary: FatBinary) -> Result<()> {
@@ -53,6 +53,10 @@ pub fn change_rpath(args: ChangeArgs, path: PathBuf, mut binary: FatBinary) -> R
 
     println!("Saving binary to {path:?}");
     binary.write(&path);
+
+    if codesign::sign_binary(&path) {
+        println!("Succesfully signed binary {path:?}");
+    }
 
     Ok(())
 }
