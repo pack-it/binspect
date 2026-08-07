@@ -16,6 +16,12 @@ pub fn handle_macho(command: Command, binary: FatBinary) -> Result<()> {
             Ok(())
         },
         Some(Subcommand::Library(args)) => library::change_library(args, command.path, binary),
+        Some(Subcommand::Sign) => {
+            if codesign::sign_binary(&command.path) {
+                println!("Succesfully signed binary {}", command.path.display());
+            }
+            Ok(())
+        },
         None => inspect::inspect_macho(command.inspect_args.unwrap_or_default(), binary),
     }
 }

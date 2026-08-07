@@ -18,6 +18,10 @@ pub fn handle_pe(command: Command, binary: Binary) -> Result<()> {
         },
         // Libraries are called imports in `PE` binaries
         Some(Subcommand::Library(args)) => import::change_import(args, command.path, binary),
+        Some(Subcommand::Sign) => {
+            error!("PE binaries do not need signing");
+            Ok(())
+        },
         None => inspect::inspect_pe(command.inspect_args.unwrap_or_default(), binary),
     }
 }

@@ -5,7 +5,7 @@ mod runpath;
 
 use lief::elf::Binary;
 
-use crate::{Command, Result, commands::Subcommand};
+use crate::{Command, Result, commands::Subcommand, macros::error};
 
 /// Handles a command for an `ELF` binary.
 pub fn handle_elf(command: Command, binary: Binary) -> Result<()> {
@@ -13,6 +13,10 @@ pub fn handle_elf(command: Command, binary: Binary) -> Result<()> {
         Some(Subcommand::Rpath(args)) => rpath::change_rpath(args, command.path, binary),
         Some(Subcommand::Runpath(args)) => runpath::change_runpath(args, command.path, binary),
         Some(Subcommand::Library(args)) => library::change_library(args, command.path, binary),
+        Some(Subcommand::Sign) => {
+            error!("ELF binaries do not need signing");
+            Ok(())
+        },
         None => inspect::inspect_elf(command.inspect_args.unwrap_or_default(), binary),
     }
 }

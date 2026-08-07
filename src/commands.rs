@@ -36,6 +36,9 @@ pub enum Subcommand {
     /// Changes the libraries of the binary. (In `PE` binaries these are normally called 'imports')
     #[command(subcommand)]
     Library(ChangeArgs),
+
+    /// Signs a binary. (Currently only available for MachO)
+    Sign,
 }
 
 /// The available change commands with their arguments.
@@ -80,6 +83,7 @@ impl Display for Subcommand {
             Subcommand::Rpath(_) => write!(f, "rpath"),
             Subcommand::Runpath(_) => write!(f, "runpath"),
             Subcommand::Library(_) => write!(f, "library"),
+            Subcommand::Sign => write!(f, "sign"),
         }
     }
 }
