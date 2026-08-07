@@ -55,11 +55,11 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: FatBinary) ->
         }
     }
 
-    println!("Saving binary to {path:?}");
+    println!("Saving binary to {}", path.display());
     binary.write(&path);
 
     if codesign::sign_binary(&path) {
-        println!("Succesfully signed binary {path:?}");
+        println!("Succesfully signed binary {}", path.display());
     }
 
     Ok(())

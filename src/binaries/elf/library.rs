@@ -50,7 +50,7 @@ pub fn change_library(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Re
         },
     }
 
-    println!("Saving binary to {path:?}");
+    println!("Saving binary to {}", path.display());
     let config = Config::default();
     binary.write_with_config(path, config);
 

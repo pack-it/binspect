@@ -51,7 +51,7 @@ pub fn change_import(args: ChangeArgs, path: PathBuf, mut binary: Binary) -> Res
         },
     }
 
-    println!("Saving binary to {path:?}");
+    println!("Saving binary to {}", path.display());
     let config = Config {
         imports: true,
         ..Default::default()
