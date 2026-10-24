@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 /// Version in tuple format.
 pub type TupleVersion = (u64, u64, u64);
 

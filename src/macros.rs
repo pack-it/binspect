@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 /// Helper macro to print error logging in an error style.
 macro_rules! error {
     ($($arg:tt)*) => {
