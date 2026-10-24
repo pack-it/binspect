@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 /// The errors that occur within Binspect.
 #[derive(thiserror::Error, Debug)]
 pub enum Error {

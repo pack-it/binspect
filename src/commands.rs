@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-only
 use std::{fmt::Display, path::PathBuf};
 
 use clap::{Args, CommandFactory, Parser, Subcommand as ClapSubcommand};

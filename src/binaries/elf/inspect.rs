@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-only
 use lief::elf::{Binary, dynamic::Entries};
 
 use crate::{Result, commands::InspectOptions};

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-only
 #![warn(clippy::doc_markdown, clippy::inconsistent_struct_constructor, clippy::derive_partial_eq_without_eq)]
 #![warn(clippy::cargo, clippy::perf, clippy::complexity)]
 #![allow(clippy::enum_variant_names)]
